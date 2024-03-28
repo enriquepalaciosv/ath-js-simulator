@@ -139,8 +139,8 @@ function createSubmitForm(
 
 (function () {
   function init() {
-    function submit(athUsername: string) {
-      trackClick("Form submit", athUsername);
+    async function submit(athUsername: string) {
+      await trackClick("Form submit", athUsername);
       // /pay/ABCDEF12/event - POST
     }
 
