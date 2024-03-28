@@ -4,14 +4,14 @@ declare const cancelATHM: () => void;
 declare const expiredATHM: () => void;
 
 const authorization = async () => {
-  console.log("authorization function");
+  // TODO: call /pay/ABCDEF12/status
   return new Promise((resolve) => {
     resolve({ method: "authorization", payload: ATHM_Checkout });
   });
 };
 
 const findPaymentATHM = async () => {
-  console.log("findPaymentATHM function");
+  // TODO: call /pay/ABCDEF12/status
   return new Promise((resolve) => {
     resolve({ method: "findPaymentATHM", payload: ATHM_Checkout });
   });
@@ -78,7 +78,6 @@ function createButton(containerId: string, clickHandler: () => void) {
   function init() {
     function showSubmitionForm() {
       trackClick("ATH button");
-      authorizationATHM();
       // TODO: show submition form
     }
 
