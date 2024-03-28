@@ -96,17 +96,38 @@ function createSubmitForm(
   var inputElement = document.createElement("input");
   inputElement.type = "text";
   inputElement.placeholder = "Email, username or phone number";
-  inputElement.style.marginBottom = "10px";
+  inputElement.style.display = "block";
+  inputElement.style.minWidth = "300px";
+  inputElement.style.padding = "10px";
+  inputElement.style.margin = "16px 0px";
+  inputElement.style.fontSize = "16px";
+  inputElement.style.border = "1px solid #ccc";
+  inputElement.style.borderRadius = "4px";
+  inputElement.style.boxSizing = "border-box";
+  inputElement.style.transition = "border-color 0.3s ease";
+
+  inputElement.addEventListener("focus", function () {
+    inputElement.style.borderColor = "#007bff";
+  });
+
+  inputElement.addEventListener("blur", function () {
+    inputElement.style.borderColor = "#ccc";
+  });
 
   var buttonElement = document.createElement("button");
   buttonElement.textContent = "Next";
-  buttonElement.style.cursor = "pointer";
-  buttonElement.style.padding = "8px 16px";
-  buttonElement.style.border = "none";
-  buttonElement.style.backgroundColor = "#007bff";
-  buttonElement.style.color = "#fff";
+  buttonElement.style.display = "inline-block";
+  buttonElement.style.padding = "10px 20px";
+  buttonElement.style.fontSize = "16px";
   buttonElement.style.fontWeight = "bold";
+  buttonElement.style.textAlign = "center";
+  buttonElement.style.textDecoration = "none";
+  buttonElement.style.cursor = "pointer";
   buttonElement.style.borderRadius = "4px";
+  buttonElement.style.transition = "background-color 0.3s, color 0.3s";
+  buttonElement.style.backgroundColor = "#3f51b5";
+  buttonElement.style.color = "#ffffff";
+  buttonElement.style.border = "none";
   buttonElement.addEventListener("click", function () {
     var inputValue = inputElement.value;
     clickHandler(inputValue);
