@@ -3,6 +3,11 @@ declare const authorizationATHM: () => void;
 declare const cancelATHM: () => void;
 declare const expiredATHM: () => void;
 
+const ATH_API_URL = "https://ath-simulator.acima.com";
+const BUTTON_CONTAINER_ID = "ATHMovil_Checkout_Button_payment_sandbox";
+const LABEL_ID = "ATHMovil_Payent_Label";
+const FORM_ID = "ATHMovil_Submit_Form";
+
 const authorization = async () => {
   // TODO: call /pay/ABCDEF12/status
   return new Promise((resolve) => {
@@ -72,17 +77,57 @@ function createButton(containerId: string, clickHandler: () => void) {
   }
 }
 
+function removeElement(containerId: string) {
+  var elementToRemove = document.getElementById(containerId);
+  if (elementToRemove) {
+    elementToRemove.parentNode?.removeChild(elementToRemove);
+  }
+}
+
+function createSubmitForm(
+  containerId: string,
+  clickHandler: (athUsername: string) => void
+) {
+  var container = document.getElementById(containerId) as HTMLElement;
+
+  container.style.display = "flex";
+  container.style.flexDirection = "column";
+
+  var inputElement = document.createElement("input");
+  inputElement.type = "text";
+  inputElement.placeholder = "Email, username or phone number";
+  inputElement.style.marginBottom = "10px";
+
+  var buttonElement = document.createElement("button");
+  buttonElement.textContent = "Next";
+  buttonElement.style.cursor = "pointer";
+  buttonElement.style.padding = "8px 16px";
+  buttonElement.style.border = "none";
+  buttonElement.style.backgroundColor = "#007bff";
+  buttonElement.style.color = "#fff";
+  buttonElement.style.fontWeight = "bold";
+  buttonElement.style.borderRadius = "4px";
+  buttonElement.addEventListener("click", function () {
+    var inputValue = inputElement.value;
+    clickHandler(inputValue);
+  });
+
+  container?.appendChild(inputElement);
+  container?.appendChild(buttonElement);
+}
+
 (function () {
-  const BUTTON_CONTAINER_ID = "ATHMovil_Checkout_Button_payment_sandbox";
-
   function init() {
-    function showSubmitionForm() {
-      trackClick("ATH button");
-      // TODO: show submition form
-    }
-
     function submit(athUsername: string) {
       trackClick("Form submit", athUsername);
+      // /pay/ABCDEF12/event - POST
+    }
+
+    function showSubmitionForm() {
+      trackClick("ATH button");
+      removeElement(BUTTON_CONTAINER_ID);
+      removeElement(LABEL_ID);
+      createSubmitForm(FORM_ID, submit);
     }
 
     createButton(BUTTON_CONTAINER_ID, showSubmitionForm);
