@@ -8,19 +8,32 @@ const BUTTON_CONTAINER_ID = "ATHMovil_Checkout_Button_payment_sandbox";
 const LABEL_ID = "ATHMovil_Payent_Label";
 const FORM_ID = "ATHMovil_Submit_Form";
 
-const authorization = async () => {
-  // TODO: call /pay/ABCDEF12/status
-  return new Promise((resolve) => {
-    resolve({ method: "authorization", payload: ATHM_Checkout });
-  });
-};
+import axios from "axios";
 
-const findPaymentATHM = async () => {
-  // TODO: call /pay/ABCDEF12/status
-  return new Promise((resolve) => {
-    resolve({ method: "findPaymentATHM", payload: ATHM_Checkout });
-  });
-};
+export async function authorization() {
+  try {
+    const url = `${ATH_API_URL}/pay/ABCDEF12/status`;
+    const response = await axios.get(url);
+    console.log("Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+(window as any).authorization = authorization;
+
+export async function findPaymentATHM() {
+  try {
+    const url = `${ATH_API_URL}/pay/ABCDEF12/status`;
+    const response = await axios.get(url);
+    console.log("Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+(window as any).findPaymentATHM = findPaymentATHM;
 
 const trackClick = async (buttonName: string, athUsername?: string) => {
   const payload = {
@@ -28,7 +41,14 @@ const trackClick = async (buttonName: string, athUsername?: string) => {
     ath_username: athUsername,
   };
   console.log("tracking click", payload);
-  // TODO: /pay/ABCDEF12/click - POST
+  try {
+    const url = `${ATH_API_URL}/pay/ABCDEF12/click`;
+    const response = await axios.post(url, payload);
+    console.log("Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error:", error);
+  }
 };
 
 function createButton(containerId: string, clickHandler: () => void) {
@@ -130,7 +150,9 @@ function createSubmitForm(
   buttonElement.style.border = "none";
   buttonElement.addEventListener("click", function () {
     var inputValue = inputElement.value;
-    clickHandler(inputValue);
+    if (inputValue) {
+      clickHandler(inputValue);
+    }
   });
 
   container?.appendChild(inputElement);
@@ -140,12 +162,24 @@ function createSubmitForm(
 (function () {
   function init() {
     async function submit(athUsername: string) {
-      await trackClick("Form submit", athUsername);
+      const form = document.getElementById(FORM_ID) as HTMLDivElement;
+      if (form) {
+        const button = form.querySelector("button") as HTMLButtonElement;
+        button.disabled = true;
+        button.style.opacity = "0.5";
+        button.style.cursor = "not-allowed";
+        button.style.backgroundColor = "#ccc";
+        button.style.color = "#999";
+        button.style.boxShadow = "none";
+      }
+
+      await trackClick("form", athUsername);
+      authorizationATHM();
       // /pay/ABCDEF12/event - POST
     }
 
     function showSubmitionForm() {
-      trackClick("ATH button");
+      trackClick("button");
       removeElement(BUTTON_CONTAINER_ID);
       removeElement(LABEL_ID);
       createSubmitForm(FORM_ID, submit);
