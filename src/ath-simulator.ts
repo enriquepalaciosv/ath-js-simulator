@@ -3,7 +3,7 @@ declare const authorizationATHM: () => void;
 declare const cancelATHM: () => void;
 declare const expiredATHM: () => void;
 
-const ATH_API_URL = "https://ath-simulator.acima.com";
+const ATH_API_URL = window.location.href;
 const BUTTON_CONTAINER_ID = "ATHMovil_Checkout_Button_payment_sandbox";
 const LABEL_ID = "ATHMovil_Payent_Label";
 const FORM_ID = "ATHMovil_Submit_Form";
@@ -12,24 +12,22 @@ import axios from "axios";
 
 export async function authorization() {
   try {
-    const url = `${ATH_API_URL}/pay/ABCDEF12/status`;
+    const url = `${ATH_API_URL}/status`;
     const response = await axios.get(url);
-    console.log("Response:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("(ATH Simulator) Error [authorization]:", error);
   }
 }
 (window as any).authorization = authorization;
 
 export async function findPaymentATHM() {
   try {
-    const url = `${ATH_API_URL}/pay/ABCDEF12/status`;
+    const url = `${ATH_API_URL}/status`;
     const response = await axios.get(url);
-    console.log("Response:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("(ATH Simulator) Error [findPaymentATHM]:", error);
   }
 }
 
@@ -40,14 +38,23 @@ const trackClick = async (buttonName: string, athUsername?: string) => {
     type: buttonName,
     ath_username: athUsername,
   };
-  console.log("tracking click", payload);
+  console.log("(ATH Simulator) [Click Tracking]", payload);
   try {
-    const url = `${ATH_API_URL}/pay/ABCDEF12/click`;
+    const url = `${ATH_API_URL}/click`;
     const response = await axios.post(url, payload);
-    console.log("Response:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Error:", error);
+    console.error("(ATH Simulator) Error [trackClick]:", error);
+  }
+};
+
+const submitEvent = async (ath_payload: any) => {
+  try {
+    const url = `${ATH_API_URL}/event`;
+    const response = await axios.post(url, { ath_payload });
+    return response.data;
+  } catch (error) {
+    console.error("(ATH Simulator) Error [submitEvent]:", error);
   }
 };
 
@@ -171,11 +178,12 @@ function createSubmitForm(
         button.style.backgroundColor = "#ccc";
         button.style.color = "#999";
         button.style.boxShadow = "none";
+        button.innerText = "Loading...";
       }
 
       await trackClick("form", athUsername);
+      await submitEvent(ATHM_Checkout);
       authorizationATHM();
-      // /pay/ABCDEF12/event - POST
     }
 
     function showSubmitionForm() {

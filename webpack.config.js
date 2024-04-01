@@ -1,9 +1,9 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/simulator.ts",
+  entry: "./src/ath-simulator.ts",
   output: {
-    filename: "simulator.js",
+    filename: "ath-simulator.js",
     path: path.resolve(__dirname, "dist"),
   },
   resolve: {
