@@ -181,9 +181,19 @@ function createSubmitForm(
         button.innerText = "Loading...";
       }
 
-      await trackClick("form", athUsername);
+      const { payment_intent_status } = await trackClick("form", athUsername);
       await submitEvent(ATHM_Checkout);
-      authorizationATHM();
+      switch (payment_intent_status) {
+        case "rejected":
+          cancelATHM();
+          break;
+        case "expired":
+          expiredATHM();
+          break;
+        default:
+          authorizationATHM();
+          break;
+      }
     }
 
     function showSubmitionForm() {
