@@ -182,6 +182,18 @@ function createSubmitForm(
       }
 
       const { payment_intent_status } = await trackClick("form", athUsername);
+
+      if (athUsername.toLowerCase().includes("timeout")) {
+        console.log(
+          `(ATH Simulator) Timing out the execution after ${ATHM_Checkout.timeout} milliseconds`
+        );
+        setTimeout(() => {
+          console.log("(ATH Simulator) Time has passed, expiring requests.");
+          expiredATHM();
+        }, ATHM_Checkout.timeout);
+        return;
+      }
+
       await submitEvent(ATHM_Checkout);
       switch (payment_intent_status) {
         case "rejected":
